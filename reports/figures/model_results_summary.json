@@ -1,0 +1,57 @@
+{
+  "benchmark_cv_auc": {
+    "LogisticRegression": 0.845328324829309,
+    "RandomForest": 0.8435240050319901,
+    "LightGBM": 0.8329566724748705,
+    "CatBoost": 0.8431962089777519,
+    "XGBoost": 0.8357302136470601
+  },
+  "best_hyperparameters": {
+    "n_estimators": 350,
+    "max_depth": 3,
+    "learning_rate": 0.021108560157445902,
+    "subsample": 0.630986520643808,
+    "colsample_bytree": 0.6306445556369499,
+    "min_child_weight": 8,
+    "scale_pos_weight": 2.4236790002955213,
+    "reg_alpha": 0.0016361861419694566,
+    "reg_lambda": 0.009651208515774702
+  },
+  "test_metrics": {
+    "roc_auc": 0.8459466790668836,
+    "pr_auc": 0.6655386079300717,
+    "f1_score": 0.6192017259978425,
+    "precision": 0.5189873417721519,
+    "recall": 0.767379679144385,
+    "brier_score": 0.1562976189371965
+  },
+  "slice_performance": {
+    "Contract": {
+      "Month-to-month": 0.7554,
+      "One year": 0.7446,
+      "Two year": 0.7492
+    },
+    "SeniorCitizen": {
+      "0": 0.8466,
+      "1": 0.791
+    },
+    "PaymentMethod": {
+      "Bank transfer (automatic)": 0.8672,
+      "Credit card (automatic)": 0.8584,
+      "Electronic check": 0.7823,
+      "Mailed check": 0.8247
+    },
+    "InternetService": {
+      "DSL": 0.8265,
+      "Fiber optic": 0.7856,
+      "No": 0.8738
+    }
+  },
+  "artifacts": {
+    "model": "models\\best_churn_model.pkl",
+    "feature_pipeline": "models\\feature_pipeline.joblib",
+    "roc_pr_curve": "reports/figures\\xgboost_optuna_evaluation_curves.png",
+    "confusion_matrix": "reports/figures\\xgboost_optuna_confusion_matrix.png",
+    "shap_beeswarm": "reports/figures\\shap_summary_beeswarm.png"
+  }
+}

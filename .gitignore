@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Notebooks
+.ipynb_checkpoints
+
+# OS Specific
+.DS_Store
+Thumbs.db
+
+# Data & Models (keep raw dataset in git or lfs, ignore large temp artifacts)
+catboost_info/
+mlruns/
