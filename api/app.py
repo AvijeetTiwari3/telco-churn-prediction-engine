@@ -5,6 +5,7 @@ app.py - Production-ready FastAPI REST service for real-time Churn scoring and S
 import os
 import sys
 import time
+from contextlib import asynccontextmanager
 from typing import List, Dict, Any, Optional
 
 # Ensure project root is on sys.path
@@ -19,12 +20,6 @@ from pydantic import BaseModel, Field
 from src.feature_store import TelcoFeaturePipeline
 from src.explainer import ModelExplainer
 
-app = FastAPI(
-    title="Customer Churn Prediction & Explainability Engine",
-    description="Enterprise-grade inference API for predicting telecom customer churn with SHAP explanations.",
-    version="1.0.0"
-)
-
 START_TIME = time.time()
 MODEL_PATH = "models/best_churn_model.pkl"
 PIPELINE_PATH = "models/feature_pipeline.joblib"
@@ -35,27 +30,49 @@ pipeline: Optional[TelcoFeaturePipeline] = None
 explainer: Optional[ModelExplainer] = None
 
 
+def load_artifacts():
+    global model, pipeline, explainer
+    if os.path.exists(MODEL_PATH) and os.path.exists(PIPELINE_PATH):
+        model = joblib.load(MODEL_PATH)
+        pipeline = TelcoFeaturePipeline.load(PIPELINE_PATH)
+        explainer = ModelExplainer(model, pipeline.feature_names)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    load_artifacts()
+    yield
+
+
+app = FastAPI(
+    title="Customer Churn Prediction & Explainability Engine",
+    description="Enterprise-grade inference API for predicting telecom customer churn with SHAP explanations.",
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+
 class CustomerInput(BaseModel):
     customerID: Optional[str] = Field(default="CUST-0001", description="Unique customer identifier")
-    gender: str = Field(..., example="Female")
-    SeniorCitizen: int = Field(..., ge=0, le=1, example=0)
-    Partner: str = Field(..., example="Yes")
-    Dependents: str = Field(..., example="No")
-    tenure: int = Field(..., ge=0, le=100, example=12)
-    PhoneService: str = Field(..., example="Yes")
-    MultipleLines: str = Field(..., example="No")
-    InternetService: str = Field(..., example="Fiber optic")
-    OnlineSecurity: str = Field(..., example="No")
-    OnlineBackup: str = Field(..., example="Yes")
-    DeviceProtection: str = Field(..., example="No")
-    TechSupport: str = Field(..., example="No")
-    StreamingTV: str = Field(..., example="Yes")
-    StreamingMovies: str = Field(..., example="No")
-    Contract: str = Field(..., example="Month-to-month")
-    PaperlessBilling: str = Field(..., example="Yes")
-    PaymentMethod: str = Field(..., example="Electronic check")
-    MonthlyCharges: float = Field(..., ge=0.0, example=85.5)
-    TotalCharges: float = Field(..., ge=0.0, example=1026.0)
+    gender: str = Field(..., json_schema_extra={"example": "Female"})
+    SeniorCitizen: int = Field(..., ge=0, le=1, json_schema_extra={"example": 0})
+    Partner: str = Field(..., json_schema_extra={"example": "Yes"})
+    Dependents: str = Field(..., json_schema_extra={"example": "No"})
+    tenure: int = Field(..., ge=0, le=100, json_schema_extra={"example": 12})
+    PhoneService: str = Field(..., json_schema_extra={"example": "Yes"})
+    MultipleLines: str = Field(..., json_schema_extra={"example": "No"})
+    InternetService: str = Field(..., json_schema_extra={"example": "Fiber optic"})
+    OnlineSecurity: str = Field(..., json_schema_extra={"example": "No"})
+    OnlineBackup: str = Field(..., json_schema_extra={"example": "Yes"})
+    DeviceProtection: str = Field(..., json_schema_extra={"example": "No"})
+    TechSupport: str = Field(..., json_schema_extra={"example": "No"})
+    StreamingTV: str = Field(..., json_schema_extra={"example": "Yes"})
+    StreamingMovies: str = Field(..., json_schema_extra={"example": "No"})
+    Contract: str = Field(..., json_schema_extra={"example": "Month-to-month"})
+    PaperlessBilling: str = Field(..., json_schema_extra={"example": "Yes"})
+    PaymentMethod: str = Field(..., json_schema_extra={"example": "Electronic check"})
+    MonthlyCharges: float = Field(..., ge=0.0, json_schema_extra={"example": 85.5})
+    TotalCharges: float = Field(..., ge=0.0, json_schema_extra={"example": 1026.0})
 
 
 class ChurnPredictionResponse(BaseModel):
@@ -66,18 +83,6 @@ class ChurnPredictionResponse(BaseModel):
     decision_threshold: float
     top_risk_drivers: List[Dict[str, Any]]
     model_version: str
-
-
-@app.on_event("startup")
-def load_artifacts():
-    global model, pipeline, explainer
-    if os.path.exists(MODEL_PATH) and os.path.exists(PIPELINE_PATH):
-        model = joblib.load(MODEL_PATH)
-        pipeline = TelcoFeaturePipeline.load(PIPELINE_PATH)
-        explainer = ModelExplainer(model, pipeline.feature_names)
-    else:
-        # Will be loaded once training finishes
-        pass
 
 
 @app.get("/health", tags=["Monitoring"])
