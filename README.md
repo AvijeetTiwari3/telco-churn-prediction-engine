@@ -1,11 +1,17 @@
 # 🌐 Scalable Customer Churn Prediction & Explainability Engine
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-FastAPI%20Swagger%20UI-brightgreen.svg?style=for-the-badge&logo=fastapi)](https://telco-churn-prediction-engine-u67u.onrender.com/docs)
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Production%20Ready-009688.svg)](https://fastapi.tiangolo.com/)
 [![XGBoost](https://img.shields.io/badge/Model-XGBoost%20%2B%20Optuna-orange.svg)](https://xgboost.readthedocs.io/)
 [![SHAP](https://img.shields.io/badge/Explainability-SHAP%20TreeExplainer-red.svg)](https://shap.readthedocs.io/)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-brightgreen.svg)](https://github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+> 🚀 **Live Interactive Demo:** [https://telco-churn-prediction-engine-u67u.onrender.com/docs](https://telco-churn-prediction-engine-u67u.onrender.com/docs)  
+> *(Test real-time predictions & SHAP driver attributions directly from your browser!)*  
+> *Note: Hosted on Render Free Tier. Please allow ~30 seconds for the initial container wake-up if sleeping.*
+
+---
 
 An enterprise-grade, end-to-end Machine Learning system for predicting and explaining customer churn in the telecommunications industry. Built with rigorous engineering standards, automated validation, Bayesian hyperparameter optimization, sub-population slice analysis, and real-time REST API serving.
 
